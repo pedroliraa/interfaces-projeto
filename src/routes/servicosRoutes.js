@@ -6,7 +6,10 @@ atualizarServico,
 deletarServico 
  } from "../controllers/servicoController.js";
 
+import { verificarToken } from "../middlewares/authMiddleware.js";
 const router = express.Router();
+
+router.use(verificarToken);
 
 router.post("/", criarServico);
 router.get("/", listarServicos);

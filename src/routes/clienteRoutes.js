@@ -16,9 +16,9 @@ router.get("/buscar", buscarClientePorNome);
 router.use(verificarToken);
 
 router.get("/", listarClientes);
-router.get("/:id", buscarClientePorId);
-router.post("/", criarCliente);
+router.get("/:id",  buscarClientePorId);
+router.post("/",  criarCliente);
 router.put("/:id", atualizarCliente);
-router.delete("/:id", deletarCliente);
+router.delete("/:id",  deletarCliente);
 
 export default router;
