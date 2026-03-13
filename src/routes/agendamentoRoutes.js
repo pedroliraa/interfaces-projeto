@@ -1,8 +1,13 @@
 import express from 'express';
+<<<<<<< Updated upstream
 //imporanto as funções do controller
 import {
     criarAgendamento, listarAgendamentos, buscarAgendamento, atualizarAgendamento, deletarAgendamento,
     listarAgendamentoDoDia
+=======
+import { criarAgendamento, listarAgendamentos, buscarAgendamento, atualizarAgendamento,deletarAgendamento,
+listarAgendamentoDoDia
+>>>>>>> Stashed changes
 } from '../controllers/agendamentoController.js';
 
 import { verificarToken } from "../middlewares/authMiddleware.js";
