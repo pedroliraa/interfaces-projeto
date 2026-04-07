@@ -50,3 +50,5 @@ export const deletarComentario = async (req, res) => {
       .json({ mensagem: "Erro ao deletar comentário", erro: error.message });
   }
 };
+
+//teste commit
