@@ -9,10 +9,8 @@ const GaleriaList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filtroAtivo, setFiltroAtivo] = useState("Todas");
   
-  // Pegamos o token que o grupo salvou no login
   const token = localStorage.getItem("token");
 
-  // Carrega as fotos assim que a página abre
   useEffect(() => {
     carregarFotos();
   }, []);
@@ -30,7 +28,6 @@ const GaleriaList = () => {
     if (window.confirm("Tem certeza que deseja remover esta imagem?")) {
       try {
         await galeriaService.deletar(id, token);
-        // Atualiza a lista local removendo a foto deletada
         setFotos(fotos.filter(foto => foto._id !== id));
       } catch (error) {
         alert("Erro ao excluir. Certifique-se de que está logada.");

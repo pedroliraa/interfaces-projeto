@@ -7,7 +7,7 @@ const ModalAddImagem = ({ isOpen, onClose, onSucesso }) => {
   const [arquivo, setArquivo] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  if (!isOpen) return null; // Não renderiza nada se estiver fechado
+  if (!isOpen) return null; 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,14 +18,14 @@ const ModalAddImagem = ({ isOpen, onClose, onSucesso }) => {
     const formData = new FormData();
     formData.append("titulo", titulo);
     formData.append("descricao", descricao);
-    formData.append("imagem", arquivo); // 'imagem' deve ser igual ao nome no Multer (Backend)
+    formData.append("imagem", arquivo);
 
     try {
       setLoading(true);
       await galeriaService.cadastrar(formData, token);
-      onSucesso(); // Recarrega a lista
-      onClose();   // Fecha o modal
-      setTitulo(""); setDescricao(""); setArquivo(null); // Limpa campos
+      onSucesso(); 
+      onClose();   
+      setTitulo(""); setDescricao(""); setArquivo(null); 
     } catch (error) {
       alert("Erro ao cadastrar imagem. Verifique o login.");
     } finally {
