@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Pencil, Trash2, Plus } from "lucide-react"; // fazer "npm install lucie-react" para usar esses ícones
+import React, { useEffect, useState, useCallback } from "react";
+import { Pencil, Trash2, Plus } from "lucide-react";
 import galeriaService from "../../services/galeriaService";
 import ModalAddImagem from "./ModalAddImagem";
 import "./Galeria.css";
@@ -8,95 +8,118 @@ const GaleriaList = () => {
   const [fotos, setFotos] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filtroAtivo, setFiltroAtivo] = useState("Todas");
-  
-  const token = localStorage.getItem("token");
 
-  useEffect(() => {
-    carregarFotos();
-  }, []);
-
-  const carregarFotos = async () => {
+  const carregarFotos = useCallback(async () => {
     try {
       const dados = await galeriaService.listar();
-      setFotos(dados);
+      setFotos(dados || []);
     } catch (error) {
       console.error("Erro ao buscar fotos da galeria:", error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    let ativo = true;
+
+    async function buscarDadosIniciais() {
+      try {
+        const dados = await galeriaService.listar();
+        if (ativo) {
+          setFotos(dados || []);
+        }
+      } catch (error) {
+        console.error("Erro na carga inicial:", error);
+      }
+    }
+
+    buscarDadosIniciais();
+
+    return () => {
+      ativo = false; 
+    };
+  }, []); 
 
   const handleExcluir = async (id) => {
     if (window.confirm("Tem certeza que deseja remover esta imagem?")) {
       try {
-        await galeriaService.deletar(id, token);
-        setFotos(fotos.filter(foto => foto._id !== id));
+        await galeriaService.excluir(id);
+        carregarFotos();
       } catch (error) {
-        alert("Erro ao excluir. Certifique-se de que está logada.");
+        console.error("Erro ao excluir foto:", error);
       }
     }
   };
 
+  const fotosFiltradas =
+    filtroAtivo === "Todas"
+      ? fotos
+      : fotos.filter((foto) => foto.categoria === filtroAtivo);
+
   return (
     <div className="galeria-page">
-      {/* HEADER DA PÁGINA */}
       <header className="galeria-header">
-        <div className="header-text">
+        <div>
           <h1>Galeria</h1>
-          <p>Confira as imagens presentes na galeria. Adicione, exclua ou edite.</p>
+          <p>
+            Confira as imagens presentes na galeria. Adicione, exclua ou edite.
+          </p>
         </div>
         <button className="btn-add" onClick={() => setIsModalOpen(true)}>
-          <Plus size={18} /> Adicionar Imagem
+          <Plus size={20} />
+          Adicionar Imagem
         </button>
       </header>
 
-      {/* BARRA DE FILTROS (Baseada no Figma) */}
-      <nav className="galeria-filter">
-        {["Todas", "Nail Art", "Manicure", "Pedicure", "Alongamento"].map((cat) => (
-          <button 
-            key={cat}
-            className={filtroAtivo === cat ? "active" : ""}
-            onClick={() => setFiltroAtivo(cat)}
-          >
-            {cat}
-          </button>
-        ))}
-      </nav>
+      {/* Filtros conforme seu design: Todas, Nail Art, Manicure, Pedicure, Alongamento */}
+      <div className="galeria-filter">
+        {["Todas", "Nail Art", "Manicure", "Pedicure", "Alongamento"].map(
+          (cat) => (
+            <button
+              key={cat}
+              className={filtroAtivo === cat ? "active" : ""}
+              onClick={() => setFiltroAtivo(cat)}
+            >
+              {cat}
+            </button>
+          ),
+        )}
+      </div>
 
-      {/* GRID DE IMAGENS */}
+      {/* Grid de Fotos */}
       <div className="galeria-grid">
-        {fotos.length > 0 ? (
-          fotos.map((foto) => (
+        {fotosFiltradas.length > 0 ? (
+          fotosFiltradas.map((foto) => (
             <div key={foto._id} className="galeria-card">
-              <img 
-                src={`http://localhost:3000/uploads/${foto.imagemUrl}`} 
-                alt={foto.titulo} 
-              />
-              
-              {/* BOTÕES FLUTUANTES (Ações) */}
+              <img src={foto.url} alt={foto.titulo || "Trabalho"} />
               <div className="card-actions">
                 <button className="btn-edit" title="Editar">
-                  <Pencil size={14} />
+                  <Pencil size={16} />
                 </button>
-                <button 
-                  className="btn-delete" 
+                <button
+                  className="btn-delete"
                   title="Excluir"
                   onClick={() => handleExcluir(foto._id)}
                 >
-                  <Trash2 size={14} />
+                  <Trash2 size={16} />
                 </button>
               </div>
             </div>
           ))
         ) : (
-          <p className="empty-msg">Nenhuma imagem encontrada na galeria.</p>
+          <p className="empty-msg">Nenhuma foto encontrada nesta categoria.</p>
         )}
       </div>
 
-      {/* MODAL DE ADICIONAR (Controlado pelo estado) */}
-      <ModalAddImagem 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        onSucesso={carregarFotos} 
-      />
+      {/* Modal de Upload */}
+      {isModalOpen && (
+        <ModalAddImagem
+          onClose={() => setIsModalOpen(false)}
+          onSuccess={() => {
+            setIsModalOpen(false);
+            carregarFotos();
+          }}
+        />
+      )}
     </div>
   );
 };
