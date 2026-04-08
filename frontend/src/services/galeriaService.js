@@ -1,39 +1,51 @@
-import api from "./api";
+import api from './api';
 
 const galeriaService = {
-
-  async listar() {
-    const response = await api.get("/galeria");
-    return response.data;
+  listar: async () => {
+    try {
+      const response = await api.get('/galeria');
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao listar galeria:", error);
+      throw error;
+    }
   },
 
-  async cadastrar(formData, token) {
-    const response = await api.post("/galeria", formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    return response.data;
+  criar: async (formData) => {
+    try {
+      const response = await api.post('/galeria', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao criar item na galeria:", error);
+      alert("Erro ao enviar imagem. Verifique se o backend está rodando.");
+      throw error;
+    }
   },
 
-  async deletar(id, token) {
-    const response = await api.delete(`/galeria/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
+  atualizar: async (id, dados) => {
+    try {
+      const response = await api.put(`/galeria/${id}`, dados);
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao atualizar galeria:", error);
+      throw error;
+    }
   },
 
-  async atualizar(id, dados, token) {
-    const response = await api.put(`/galeria/${id}`, dados, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  }
+  // 4. EXCLUIR: Remove a foto
+  excluir: async (id) => {
+    try {
+      const response = await api.delete(`/galeria/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao excluir item da galeria:", error);
+      throw error;
+    }
+  },
 };
 
 export default galeriaService;

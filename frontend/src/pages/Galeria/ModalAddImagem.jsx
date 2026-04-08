@@ -1,33 +1,42 @@
 import React, { useState } from "react";
 import galeriaService from "../../services/galeriaService";
+import { X, Upload } from "lucide-react";
+import "./Modal.css";
 
-const ModalAddImagem = ({ isOpen, onClose, onSucesso }) => {
+const ModalAddImagem = ({ onClose, onSuccess }) => {
+  const [file, setFile] = useState(null);
   const [titulo, setTitulo] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [arquivo, setArquivo] = useState(null);
+  const [categoria, setCategoria] = useState("Nail Art");
+  const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  if (!isOpen) return null; 
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setPreview(URL.createObjectURL(selectedFile));
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");
+    
+    if (!file) return alert("Por favor, selecione uma imagem!");
+    if (!titulo.trim()) return alert("Por favor, digite um título!");
 
-    if (!arquivo) return alert("Selecione uma imagem!");
+    setLoading(true);
 
     const formData = new FormData();
+    formData.append("imagem", file); 
     formData.append("titulo", titulo);
-    formData.append("descricao", descricao);
-    formData.append("imagem", arquivo);
+    formData.append("categoria", categoria);
 
     try {
-      setLoading(true);
-      await galeriaService.cadastrar(formData, token);
-      onSucesso(); 
-      onClose();   
-      setTitulo(""); setDescricao(""); setArquivo(null); 
+      await galeriaService.criar(formData);
+      alert("Imagem enviada com sucesso!");
+      onSuccess(); 
     } catch (error) {
-      alert("Erro ao cadastrar imagem. Verifique o login.");
+      console.error("Erro no upload:", error);
     } finally {
       setLoading(false);
     }
@@ -36,44 +45,52 @@ const ModalAddImagem = ({ isOpen, onClose, onSucesso }) => {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <h2>Adicionar Nova Imagem</h2>
+        <div className="modal-header">
+          <h2>Nova Nail Art</h2>
+          <button onClick={onClose} className="btn-close"><X /></button>
+        </div>
+
         <form onSubmit={handleSubmit}>
-          <div className="input-group">
-            <label>Título</label>
+          <div className="form-group">
+            <label>Título da Foto</label>
             <input 
               type="text" 
-              value={titulo} 
-              onChange={(e) => setTitulo(e.target.value)} 
-              required 
+              className="input-field"
+              placeholder="Ex: Francesinha delicada"
+              value={titulo}
+              onChange={(e) => setTitulo(e.target.value)}
+              required
             />
           </div>
 
-          <div className="input-group">
-            <label>Descrição</label>
-            <textarea 
-              value={descricao} 
-              onChange={(e) => setDescricao(e.target.value)} 
-            />
+          <div className="upload-area">
+            {preview ? (
+              <img src={preview} alt="Preview" className="img-preview" />
+            ) : (
+              <label htmlFor="file-upload" className="upload-label">
+                <Upload size={40} />
+                <span>Selecionar Foto</span>
+              </label>
+            )}
+            <input id="file-upload" type="file" accept="image/*" onChange={handleFileChange} hidden />
           </div>
 
-          <div className="input-group">
-            <label>Imagem</label>
-            <input 
-              type="file" 
-              accept="image/*" 
-              onChange={(e) => setArquivo(e.target.files[0])} 
-              required 
-            />
+          <div className="form-group">
+            <label>Categoria</label>
+            <select 
+              className="input-field"
+              value={categoria} 
+              onChange={(e) => setCategoria(e.target.value)}
+            >
+              <option value="Nail Art">Nail Art</option>
+              <option value="Alongamento">Alongamento</option>
+              <option value="Manicure">Manicure</option>
+            </select>
           </div>
 
-          <div className="modal-actions">
-            <button type="button" className="btn-cancelar" onClick={onClose}>
-              Cancelar
-            </button>
-            <button type="submit" className="btn-save" disabled={loading}>
-              {loading ? "Enviando..." : "Salvar Imagem"}
-            </button>
-          </div>
+          <button type="submit" className="btn-save" disabled={loading}>
+            {loading ? "Enviando..." : "Salvar na Galeria"}
+          </button>
         </form>
       </div>
     </div>

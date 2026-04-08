@@ -5,7 +5,7 @@ import { verificarToken } from "../middlewares/authMiddleware.js";
 
 const routes = new Router();
 
-routes.use(verificarToken);
+// routes.use(verificarToken);
 
 routes.get("/", GaleriaController.index);
 
