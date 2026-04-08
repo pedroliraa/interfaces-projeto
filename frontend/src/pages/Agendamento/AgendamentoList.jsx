@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/immutability */
 import { useState, useEffect } from 'react'
 import styles from './AgendamentoList.module.css'
-import { listarAgendamentos, atualizarAgendamento, deletarAgendamento, criarAgendamento } from '../../services/agendamentoService'
+import { listarAgendamentos, atualizarAgendamento, deletarAgendamento, criarAgendamento, listarClientes, listarFuncionarios, listarServicos } from '../../services/agendamentoService'
 
 function AgendamentoList() {
   const [agendamentos, setAgendamentos] = useState([])
@@ -9,11 +9,13 @@ function AgendamentoList() {
   const [busca, setBusca] = useState('')
   const [modalAberto, setModalAberto] = useState(false)
   const [form, setForm] = useState({ cliente: '', funcionario: '', servico: '', data: '', status: 'agendado' })
+  const [clientes, setClientes] = useState([])
+  const [funcionarios, setFuncionarios] = useState([])
+  const [servicos, setServicos] = useState([])
 
   useEffect(() => {
-    (async () => {
-      await carregarAgendamentos()
-    })()
+    carregarAgendamentos()
+    carregarSelects()
   }, [])
 
   async function carregarAgendamentos() {
@@ -22,6 +24,21 @@ function AgendamentoList() {
       setAgendamentos(dados)
     } catch (err) {
       console.error('Erro ao carregar agendamentos:', err)
+    }
+  }
+
+  async function carregarSelects() {
+    try {
+      const [c, f, s] = await Promise.all([
+        listarClientes(),
+        listarFuncionarios(),
+        listarServicos()
+      ])
+      setClientes(c)
+      setFuncionarios(f)
+      setServicos(s)
+    } catch (err) {
+      console.error('Erro ao carregar selects:', err)
     }
   }
 
@@ -47,43 +64,31 @@ function AgendamentoList() {
   }
 
   async function handleSalvar() {
-  try {
-    if (!form.cliente || !form.funcionario || !form.servico || !form.data) {
-      alert('Preencha todos os campos');
-      return;
+    try {
+      if (!form.cliente || !form.funcionario || !form.servico || !form.data) {
+        alert('Preencha todos os campos')
+        return
+      }
+
+      const payload = {
+        cliente: form.cliente,
+        funcionario: form.funcionario,
+        servico: form.servico,
+        data: new Date(form.data).toISOString(),
+        status: 'agendado'
+      }
+
+      await criarAgendamento(payload)
+
+      setModalAberto(false)
+      setForm({ cliente: '', funcionario: '', servico: '', data: '', status: 'agendado' })
+      await carregarAgendamentos()
+
+    } catch (err) {
+      console.error('Erro ao salvar agendamento:', err)
+      alert('Erro ao salvar agendamento')
     }
-
-    const payload = {
-      cliente: form.cliente,
-      funcionario: form.funcionario,
-      servico: form.servico,
-      data: new Date(form.data).toISOString(), 
-      status: 'agendado'
-    };
-
-    console.log('ENVIANDO:', payload);
-
-    const res = await criarAgendamento(payload);
-
-    console.log('RESPOSTA:', res);
-
-    setModalAberto(false);
-
-    setForm({
-      cliente: '',
-      funcionario: '',
-      servico: '',
-      data: '',
-      status: 'agendado'
-    });
-
-    await carregarAgendamentos();
-
-  } catch (err) {
-    console.error('ERRO AO SALVAR:', err);
-    alert('Erro ao salvar agendamento');
   }
-}
 
   const agendamentosFiltrados = agendamentos
     .filter(a => filtro === 'todos' || a.status === filtro)
@@ -173,17 +178,37 @@ function AgendamentoList() {
             <h2 className={styles.modalTitulo}>Novo Agendamento</h2>
 
             <div className={styles.modalCampos}>
-              <label>ID do Cliente</label>
-              <input className={styles.modalInput} value={form.cliente} onChange={e => setForm({ ...form, cliente: e.target.value })} placeholder="ID do cliente" />
+              <label>Cliente</label>
+              <select className={styles.modalInput} value={form.cliente} onChange={e => setForm({ ...form, cliente: e.target.value })}>
+                <option value="">Selecione o cliente</option>
+                {clientes.map(c => (
+                  <option key={c._id} value={c._id}>{c.nome}</option>
+                ))}
+              </select>
 
-              <label>ID do Funcionário</label>
-              <input className={styles.modalInput} value={form.funcionario} onChange={e => setForm({ ...form, funcionario: e.target.value })} placeholder="ID do funcionário" />
+              <label>Funcionário</label>
+              <select className={styles.modalInput} value={form.funcionario} onChange={e => setForm({ ...form, funcionario: e.target.value })}>
+                <option value="">Selecione o funcionário</option>
+                {funcionarios.map(f => (
+                  <option key={f._id} value={f._id}>{f.nome}</option>
+                ))}
+              </select>
 
-              <label>ID do Serviço</label>
-              <input className={styles.modalInput} value={form.servico} onChange={e => setForm({ ...form, servico: e.target.value })} placeholder="ID do serviço" />
+              <label>Serviço</label>
+              <select className={styles.modalInput} value={form.servico} onChange={e => setForm({ ...form, servico: e.target.value })}>
+                <option value="">Selecione o serviço</option>
+                {servicos.map(s => (
+                  <option key={s._id} value={s._id}>{s.nome}</option>
+                ))}
+              </select>
 
               <label>Data e Hora</label>
-              <input className={styles.modalInput} type="datetime-local" value={form.data} onChange={e => setForm({ ...form, data: e.target.value })} />
+              <input
+                className={styles.modalInput}
+                type="datetime-local"
+                value={form.data}
+                onChange={e => setForm({ ...form, data: e.target.value })}
+              />
             </div>
 
             <div className={styles.modalAcoes}>
