@@ -98,7 +98,6 @@ const GaleriaList = () => {
               <img
                 src={`http://localhost:3000/uploads/${foto.imagemUrl}`}
                 alt={foto.titulo}
-                className="sua-classe-css"
               />
               <div className="card-actions">
                 <button

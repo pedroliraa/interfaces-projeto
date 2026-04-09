@@ -14,6 +14,7 @@ const ModalAddImagem = ({ onClose, onSuccess, fotoExistente }) => {
     if (fotoExistente) {
       setTitulo(fotoExistente.titulo);
       setDescricao(fotoExistente.descricao || "");
+
       if (fotoExistente.imagemUrl) {
         setPreview(`http://localhost:3000/uploads/${fotoExistente.imagemUrl}`);
       }
@@ -53,13 +54,13 @@ const ModalAddImagem = ({ onClose, onSuccess, fotoExistente }) => {
         const formData = new FormData();
         formData.append("imagem", file);
         formData.append("titulo", titulo);
-        formData.append("descricao", descricao);
+        formData.append("descricao", descricao || ""); 
 
         await galeriaService.criar(formData);
         alert("Nova imagem adicionada!");
       }
 
-      onSuccess(); 
+      onSuccess();
     } catch (error) {
       console.error("Erro na operação:", error);
       alert("Erro ao salvar. Verifique se o backend está conectado ao banco.");

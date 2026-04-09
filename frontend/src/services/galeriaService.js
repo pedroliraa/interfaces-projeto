@@ -3,7 +3,10 @@ import api from './api';
 const galeriaService = {
   listar: async () => {
     try {
-      const response = await api.get('/galeria');
+      const token = localStorage.getItem("token");
+      const response = await api.get('/galeria', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       return response.data;
     } catch (error) {
       console.error("Erro ao listar galeria:", error);
@@ -13,22 +16,26 @@ const galeriaService = {
 
   criar: async (formData) => {
     try {
+      const token = localStorage.getItem("token");
       const response = await api.post('/galeria', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`
         },
       });
       return response.data;
     } catch (error) {
       console.error("Erro ao criar item na galeria:", error);
-      alert("Erro ao enviar imagem. Verifique se o backend está rodando.");
       throw error;
     }
   },
 
   atualizar: async (id, dados) => {
     try {
-      const response = await api.put(`/galeria/${id}`, dados);
+      const token = localStorage.getItem("token");
+      const response = await api.put(`/galeria/${id}`, dados, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       return response.data;
     } catch (error) {
       console.error("Erro ao atualizar galeria:", error);
@@ -36,16 +43,17 @@ const galeriaService = {
     }
   },
 
-  // 4. EXCLUIR: Remove a foto
   excluir: async (id) => {
     try {
-      const response = await api.delete(`/galeria/${id}`);
-      return response.data;
+      const token = localStorage.getItem("token");
+      await api.delete(`/galeria/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
     } catch (error) {
-      console.error("Erro ao excluir item da galeria:", error);
+      console.error("Erro ao excluir item:", error);
       throw error;
     }
-  },
-};
+  }
+}; 
 
 export default galeriaService;
