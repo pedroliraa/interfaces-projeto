@@ -13,7 +13,8 @@ const galeriaSchema = new mongoose.Schema(
     },
 
     descricao: {
-      type: String
+      type: String,
+      required: true
     }
   },
   { timestamps: true }

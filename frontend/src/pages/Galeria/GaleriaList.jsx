@@ -24,6 +24,7 @@ const GaleriaList = () => {
     async function buscarDadosIniciais() {
       try {
         const dados = await galeriaService.listar();
+        console.log("DADOS DO BANCO:", dados);
         if (ativo) {
           setFotos(dados || []);
         }
@@ -35,9 +36,9 @@ const GaleriaList = () => {
     buscarDadosIniciais();
 
     return () => {
-      ativo = false; 
+      ativo = false;
     };
-  }, []); 
+  }, []);
 
   const handleExcluir = async (id) => {
     if (window.confirm("Tem certeza que deseja remover esta imagem?")) {
@@ -53,7 +54,9 @@ const GaleriaList = () => {
   const fotosFiltradas =
     filtroAtivo === "Todas"
       ? fotos
-      : fotos.filter((foto) => foto.categoria === filtroAtivo);
+      : fotos.filter((foto) => {
+          return foto.descricao === filtroAtivo;
+        });
 
   return (
     <div className="galeria-page">
@@ -70,7 +73,6 @@ const GaleriaList = () => {
         </button>
       </header>
 
-      {/* Filtros conforme seu design: Todas, Nail Art, Manicure, Pedicure, Alongamento */}
       <div className="galeria-filter">
         {["Todas", "Nail Art", "Manicure", "Pedicure", "Alongamento"].map(
           (cat) => (
@@ -85,7 +87,6 @@ const GaleriaList = () => {
         )}
       </div>
 
-      {/* Grid de Fotos */}
       <div className="galeria-grid">
         {fotosFiltradas.length > 0 ? (
           fotosFiltradas.map((foto) => (
@@ -110,7 +111,6 @@ const GaleriaList = () => {
         )}
       </div>
 
-      {/* Modal de Upload */}
       {isModalOpen && (
         <ModalAddImagem
           onClose={() => setIsModalOpen(false)}
