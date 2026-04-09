@@ -8,6 +8,7 @@ const GaleriaList = () => {
   const [fotos, setFotos] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filtroAtivo, setFiltroAtivo] = useState("Todas");
+  const [fotoParaEditar, setFotoParaEditar] = useState(null);
 
   const carregarFotos = useCallback(async () => {
     try {
@@ -17,7 +18,6 @@ const GaleriaList = () => {
       console.error("Erro ao buscar fotos da galeria:", error);
     }
   }, []);
-
   useEffect(() => {
     let ativo = true;
 
@@ -55,7 +55,11 @@ const GaleriaList = () => {
     filtroAtivo === "Todas"
       ? fotos
       : fotos.filter((foto) => {
-          return foto.descricao === filtroAtivo;
+          const categoriaBanco = foto.descricao
+            ? String(foto.descricao).trim().toLowerCase()
+            : "";
+          const categoriaBotao = String(filtroAtivo).trim().toLowerCase();
+          return categoriaBanco === categoriaBotao;
         });
 
   return (
@@ -91,9 +95,17 @@ const GaleriaList = () => {
         {fotosFiltradas.length > 0 ? (
           fotosFiltradas.map((foto) => (
             <div key={foto._id} className="galeria-card">
-              <img src={foto.url} alt={foto.titulo || "Trabalho"} />
+              {/* Ajustado para imagemUrl conforme seu banco */}
+              <img
+                src={`http://localhost:3000/uploads/${foto.imagemUrl}`}
+                alt={foto.titulo}
+              />
               <div className="card-actions">
-                <button className="btn-edit" title="Editar">
+                <button
+                  className="btn-edit"
+                  title="Editar"
+                  onClick={() => setFotoParaEditar(foto)}
+                >
                   <Pencil size={16} />
                 </button>
                 <button
@@ -111,11 +123,16 @@ const GaleriaList = () => {
         )}
       </div>
 
-      {isModalOpen && (
+      {(isModalOpen || fotoParaEditar) && (
         <ModalAddImagem
-          onClose={() => setIsModalOpen(false)}
+          fotoExistente={fotoParaEditar}
+          onClose={() => {
+            setIsModalOpen(false);
+            setFotoParaEditar(null);
+          }}
           onSuccess={() => {
             setIsModalOpen(false);
+            setFotoParaEditar(null);
             carregarFotos();
           }}
         />
