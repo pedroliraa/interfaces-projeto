@@ -95,10 +95,10 @@ const GaleriaList = () => {
         {fotosFiltradas.length > 0 ? (
           fotosFiltradas.map((foto) => (
             <div key={foto._id} className="galeria-card">
-              {/* Ajustado para imagemUrl conforme seu banco */}
               <img
                 src={`http://localhost:3000/uploads/${foto.imagemUrl}`}
                 alt={foto.titulo}
+                className="sua-classe-css"
               />
               <div className="card-actions">
                 <button

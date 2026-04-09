@@ -44,7 +44,6 @@ const ModalAddImagem = ({ onClose, onSuccess, fotoExistente }) => {
 
         await galeriaService.atualizar(fotoExistente._id, dadosParaAtualizar);
         alert("Imagem atualizada com sucesso!");
-        onSuccess();
       } else {
         if (!file) {
           setLoading(false);
@@ -52,7 +51,7 @@ const ModalAddImagem = ({ onClose, onSuccess, fotoExistente }) => {
         }
 
         const formData = new FormData();
-        formData.append("imagem", file); 
+        formData.append("imagem", file);
         formData.append("titulo", titulo);
         formData.append("descricao", descricao);
 
@@ -60,7 +59,7 @@ const ModalAddImagem = ({ onClose, onSuccess, fotoExistente }) => {
         alert("Nova imagem adicionada!");
       }
 
-      onSuccess();
+      onSuccess(); 
     } catch (error) {
       console.error("Erro na operação:", error);
       alert("Erro ao salvar. Verifique se o backend está conectado ao banco.");
@@ -96,7 +95,9 @@ const ModalAddImagem = ({ onClose, onSuccess, fotoExistente }) => {
             {preview ? (
               <div className="preview-container">
                 <img src={preview} alt="Preview" className="img-preview" />
-                {!fotoExistente && <p>Toque para mudar</p>}
+                <label htmlFor="file-upload" className="change-image-label">
+                  Clique para trocar a imagem
+                </label>
               </div>
             ) : (
               <label htmlFor="file-upload" className="upload-label">
