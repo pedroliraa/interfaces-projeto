@@ -5,6 +5,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/admin/agendamentos" element={<AgendamentoList />} />
+      <Route path="/admin/funcionarios" element={<FuncionarioList />} />
     </Routes>
   )
 }
