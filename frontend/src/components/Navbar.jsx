@@ -1,39 +1,37 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-//import { useEffect } from 'react'
+import { useEffect } from 'react'
 import {
-  LayoutDashboard, Calendar, Users, Image,
-  Settings, LogOut, Sparkles, UserCircle, Star,
+  Calendar, Users, Image,
+  LogOut, Sparkles, UserCircle, Star,
 } from 'lucide-react'
 import styles from './Navbar.module.css'
 
 const menuItems = [
-  { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { path: '/admin/agendamentos', icon: Calendar, label: 'Agendamentos' },
   { path: '/admin/clientes', icon: Users, label: 'Clientes' },
   { path: '/admin/galeria', icon: Image, label: 'Galeria' },
   { path: '/admin/avaliacoes', icon: Star, label: 'Avaliações' },
   { path: '/admin/usuarios', icon: UserCircle, label: 'Usuários' },
-  { path: '/admin/configuracoes', icon: Settings, label: 'Configurações' },
 ]
 
 function Navbar() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  //useEffect(() => {
-   // const isLoggedIn = localStorage.getItem('isAdminLoggedIn')
-   // if (!isLoggedIn) {
-   //   navigate('/admin/login')
-   // }}, [navigate])
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      navigate('/')
+    }
+  }, [navigate])
 
   function handleLogout() {
-    localStorage.removeItem('isAdminLoggedIn')
-    navigate('/admin/login')
+    localStorage.removeItem('token')
+    navigate('/')
   }
 
   return (
     <aside className={styles.sidebar}>
-      {/* Logo */}
       <div className={styles.logoArea}>
         <div className={styles.logoIcon}>
           <Sparkles size={20} color="white" />
@@ -44,11 +42,11 @@ function Navbar() {
         </div>
       </div>
 
-      {/* Menu */}
       <nav className={styles.nav}>
         {menuItems.map((item) => {
           const Icon = item.icon
           const isActive = location.pathname === item.path
+
           return (
             <Link
               key={item.path}
@@ -62,7 +60,6 @@ function Navbar() {
         })}
       </nav>
 
-      {/* Sair */}
       <div className={styles.logoutArea}>
         <button onClick={handleLogout} className={styles.logoutBtn}>
           <LogOut size={20} />
