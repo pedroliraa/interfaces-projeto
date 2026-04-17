@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3000'
+const BASE_URL = 'https://interfaces-projeto.onrender.com'
 
 function getHeaders() {
   const token = localStorage.getItem('token')
