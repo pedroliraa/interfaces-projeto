@@ -26,6 +26,10 @@ app.get("/", (req, res) => {
   res.send("Backend Nails Design is running");
 });
 
+app.get("/ping", (req, res) => {
+  res.send("pong");
+});
+
 app.use("/auth", authRoutes);
 app.use("/funcionarios", funcionarioRoutes);
 app.use("/clientes", clienteRoutes);

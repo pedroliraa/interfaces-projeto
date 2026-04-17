@@ -1,0 +1,45 @@
+.container {
+  padding: 40px;
+}
+
+.titulo {
+  font-size: 28px;
+  font-weight: 600;
+  color: #4a4442;
+}
+
+.subtitulo {
+  font-size: 14px;
+  color: #9ca3af;
+  margin-bottom: 20px;
+}
+
+/* Abas */
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.tab {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: none;
+  background: #eee;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.tab:hover {
+  background: #ddd;
+}
+
+.ativa {
+  background: #d4a59a;
+  color: white;
+}
+
+/* Conteúdo */
+.conteudo {
+  margin-top: 10px;
+}

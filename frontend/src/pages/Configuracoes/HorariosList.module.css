@@ -1,0 +1,103 @@
+.container {
+  padding: 40px;
+}
+
+.titulo {
+  font-size: 28px;
+  font-weight: 600;
+  color: #4a4442;
+}
+
+.subtitulo {
+  font-size: 14px;
+  color: #9ca3af;
+  margin-bottom: 24px;
+}
+
+.card {
+  background: #e7d1c8;
+  padding: 32px;
+  border-radius: 16px;
+}
+
+.cardTitulo {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: #4a4442;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 40px;
+  margin-bottom: 24px;
+}
+
+.dia {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #d4a59a;
+  padding: 12px 16px;
+  border-radius: 999px;
+  color: #fff;
+}
+
+.toggle {
+  width: 40px;
+  height: 20px;
+  background: #bbb;
+  border-radius: 999px;
+  position: relative;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.toggle.ativo {
+  background: #fff;
+}
+
+.bolinha {
+  width: 16px;
+  height: 16px;
+  background: #666;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: 0.2s;
+}
+
+.toggle.ativo .bolinha {
+  left: 22px;
+}
+
+.horarios {
+  display: flex;
+  gap: 24px;
+  margin-top: 16px;
+}
+
+.horarios label {
+  display: block;
+  font-size: 13px;
+  color: #4a4442;
+  margin-bottom: 4px;
+}
+
+.horarios input {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+}
+
+.btnSalvar {
+  margin-top: 24px;
+  padding: 10px 20px;
+  background: #d4a59a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}

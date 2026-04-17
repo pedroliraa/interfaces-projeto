@@ -1,0 +1,110 @@
+.container {
+  padding: 40px;
+}
+
+.titulo {
+  font-size: 28px;
+  font-weight: 600;
+  color: #4a4442;
+}
+
+.subtitulo {
+  color: #9ca3af;
+  margin-bottom: 20px;
+}
+
+.topo {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.busca {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  width: 250px;
+}
+
+.addBtn {
+  background: #d4a59a;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item {
+  background: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.preco {
+  font-weight: bold;
+}
+
+.editar {
+  background: #f3f4f6;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.deletar {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: red;
+}
+
+/* MODAL */
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal input,
+.modal textarea {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.modalAcoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
